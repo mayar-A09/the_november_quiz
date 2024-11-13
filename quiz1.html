@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Novembre Bleu -overteen Djerba</title>
+    <style type="text/css">
+        /* Styles de base pour le quiz */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #3a6ad4, #0066cc, #4fa3f7);
+            background-size: 400% 400%;
+            animation: gradientAnimation 20s ease infinite;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+        .top-left-image {
+    position: absolute; /* Absolute positioning */
+    top: 0; /* Align to the top of the page */
+    left: 0; /* Align to the left of the page */
+}
+
+.top-left-image img {
+    width: 100px; /* Adjust the image size as needed */
+    height: auto; /* Maintain aspect ratio */
+}
+
+        .container {
+            width: 80%;
+            max-width: 700px;
+            padding: 40px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            color: #333;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 24px;
+            color: #3a6ad4;
+            margin-bottom: 20px;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .introduction {
+            font-size: 18px;
+            margin-bottom: 30px;
+            color: #333;
+        }
+
+        #quiz {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .question {
+            display: none;
+            text-align: center;
+            font-size: 18px;
+        }
+
+        .question.active {
+            display: block;
+            animation: fadeIn 1s ease-out;
+        }
+
+        .question label {
+            display: block;
+            margin: 10px 0;
+            font-size: 16px;
+        }
+
+        button {
+            background-color: #3a6ad4;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            transition: background-color 0.3s ease;
+            margin-top: 20px;
+        }
+
+        button:hover {
+            background-color: #3066d6;
+        }
+
+        #score {
+            text-align: center;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #e7f1ff;
+            display: none;
+            animation: fadeIn 1s ease-out;
+        }
+
+        .answers {
+            margin-top: 20px;
+            text-align: left;
+            font-size: 16px;
+            max-height: 400px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        .answer {
+            margin: 10px 0;
+        }
+
+        .correct {
+            color: green;
+        }
+
+        .incorrect {
+            color: red;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .logo {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 80px;
+            height: auto;
+        }
+
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+
+        @keyframes gradientAnimation {
+            0% {
+                background-position: 0% 50%;
+                background: linear-gradient(135deg, #3a6ad4, #0066cc, #4fa3f7);
+            }
+            25% {
+                background-position: 100% 50%;
+                background: linear-gradient(135deg, #3a6ad4, #00b0ff, #0091d5);
+            }
+            50% {
+                background-position: 0% 50%;
+                background: linear-gradient(135deg, #0066cc, #00c6ff, #0079b7);
+            }
+            75% {
+                background-position: 100% 50%;
+                background: linear-gradient(135deg, #3a6ad4, #0077ff, #4fa3f7);
+            }
+            100% {
+                background-position: 0% 50%;
+                background: linear-gradient(135deg, #3a6ad4, #0066cc, #4fa3f7);
+            }
+        }
+    </style>
+</head>
+<body>
+    <img src="mm-removebg-preview.png" alt="Movember Logo" class="logo">
+    
+    <div class="container">
+        <div class="quiz-container">
+            <div class="top-left-image">
+            <img src="ot-removebg-preview.png" class="top-left-image img" alt="Overteen_logo" >
+            </div>
+            <h1>Testez vos connaissances sur Movember et le cancer de la prostate</h1>
+            <div class="introduction">
+                <p>Novembre est le mois de sensibilisation au cancer de la prostate, et la campagne Movember incite les hommes à se laisser pousser la moustache pour soutenir cette cause. Ce quiz vous permet de tester vos connaissances sur cette campagne et sur le cancer de la prostate. Bonne chance !</p>
+            </div>
+            <div id="quiz"></div>
+            <button id="next-button" onclick="nextQuestion()">Suivant</button>
+            <div id="score" class="hidden">
+                <h3>Votre score : <span id="user-score"></span> / 10</h3>
+                <div id="answers" class="answers"></div>
+                <button onclick="restartQuiz()">Refaire le test</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                question: "Pourquoi la moustache en novembre ?",
+                options: ["Pour sensibiliser au cancer de la prostate", "Pour faire une mode", "Pour se protéger du froid", "Pour rendre hommage aux barbes"],
+                answer: 0,
+                explanation: "La moustache est un symbole de la campagne Movember, visant à sensibiliser au cancer de la prostate."
+            },
+            {
+                question: "Quel est le symbole de Movember ?",
+                options: ["Une moustache", "Un ruban bleu", "Un ruban rose", "Un cœur"],
+                answer: 0,
+                explanation: "La moustache est le symbole de la campagne Movember, utilisée pour sensibiliser au cancer de la prostate."
+            },
+            {
+                question: "Quel est le principal facteur de risque du cancer de la prostate ?",
+                options: ["L'âge", "Le tabagisme", "Les antécédents familiaux", "L'alimentation"],
+                answer: 0,
+                explanation: "L'âge est le principal facteur de risque du cancer de la prostate. Plus on vieillit, plus le risque augmente."
+            },
+            {
+                question: "À partir de quel âge les hommes doivent-ils commencer à se faire dépister pour le cancer de la prostate ?",
+                options: ["40 ans", "45 ans", "50 ans", "55 ans"],
+                answer: 2,
+                explanation: "Le dépistage commence généralement à 50 ans, sauf en cas d'antécédents familiaux."
+            },
+            {
+                question: "Le cancer de la prostate est-il souvent symptomatique à ses débuts ?",
+                options: ["Oui", "Non", "Parfois", "Cela dépend des patients"],
+                answer: 1,
+                explanation: "Le cancer de la prostate ne présente souvent aucun symptôme à ses débuts."
+            },
+            {
+                question: "Quel examen est principalement utilisé pour dépister le cancer de la prostate ?",
+                options: ["Échographie", "IRM", "Test sanguin PSA", "Biopsie"],
+                answer: 2,
+                explanation: "Le test sanguin PSA est l'examen de référence pour dépister le cancer de la prostate."
+            },
+            {
+                question: "Le cancer de la prostate peut-il être traité efficacement ?",
+                options: ["Oui, s'il est détecté tôt", "Non, c'est incurable", "Oui, mais il faut être jeune", "Il n'existe aucun traitement"],
+                answer: 0,
+                explanation: "Le cancer de la prostate peut être traité efficacement si détecté tôt."
+            },
+            {
+                question: "Qui est à l'origine de la création de la campagne Novembre Bleu ?",
+                options: ["La Ligue contre le cancer", "Le Dr Jean-Paul Moya", "Le Ministère de la Santé", "Les patients eux-mêmes"],
+                answer: 1,
+                explanation: "Le Dr Jean-Paul Moya a initié la campagne Novembre Bleu en 2014."
+            },
+            {
+                question: "Quel est l'objectif principal de la campagne Novembre Bleu ?",
+                options: ["Sensibiliser au cancer de la prostate", "Relever des fonds pour la recherche sur le cancer", "Promouvoir les traitements alternatifs", "Informer sur les maladies liées à l'âge"],
+                answer: 0,
+                explanation: "Novembre Bleu a pour objectif principal de sensibiliser la population au cancer de la prostate."
+            },
+            {
+                question: "Depuis quelle année Novembre Bleu existe-t-il en France ?",
+                options: ["2010", "2014", "2016", "2018"],
+                answer: 1,
+                explanation: "La campagne Novembre Bleu existe depuis 2014 en France."
+            }
+        ];
+
+        let userAnswers = [];
+        let score = 0;
+        let currentQuestion = 0;
+
+        function displayQuestion() {
+            const quizContainer = document.getElementById('quiz');
+            quizContainer.innerHTML = '';
+            const question = questions[currentQuestion];
+            const questionElement = document.createElement('div');
+            questionElement.classList.add('question');
+            questionElement.classList.add('active');
+
+            const questionTitle = document.createElement('h2');
+            questionTitle.textContent = question.question;
+            questionElement.appendChild(questionTitle);
+
+            question.options.forEach((option, index) => {
+                const label = document.createElement('label');
+                label.innerHTML = `
+                    <input type="radio" name="question${currentQuestion}" value="${index}">
+                    ${option}
+                `;
+                questionElement.appendChild(label);
+            });
+
+            quizContainer.appendChild(questionElement);
+            document.getElementById('next-button').style.display = 'inline-block';
+        }
+
+        function nextQuestion() {
+            const selectedOption = document.querySelector(`input[name="question${currentQuestion}"]:checked`);
+            if (selectedOption) {
+                const userAnswer = parseInt(selectedOption.value);
+                userAnswers.push(userAnswer);
+                if (userAnswer === questions[currentQuestion].answer) {
+                    score++;
+                }
+            } else {
+                userAnswers.push(null);
+            }
+
+            currentQuestion++;
+            if (currentQuestion < questions.length) {
+                displayQuestion();
+            } else {
+                showScore();
+                document.getElementById('next-button').style.display = 'none';
+            }
+        }
+
+        function showScore() {
+            document.getElementById('score').style.display = 'block';
+            document.getElementById('user-score').textContent = score;
+            document.getElementById('quiz').style.display = 'none';
+
+            const answersContainer = document.getElementById('answers');
+            answersContainer.innerHTML = '';
+
+            questions.forEach((question, index) => {
+                const answerDiv = document.createElement('div');
+                answerDiv.classList.add('answer');
+                const userAnswer = userAnswers[index];
+                const isCorrect = userAnswer === question.answer;
+                const answerClass = isCorrect ? 'correct' : 'incorrect';
+                const answerText = isCorrect ? 'Bonne réponse' : 'Mauvaise réponse';
+
+                answerDiv.innerHTML = `
+                    <p>${question.question}</p>
+                    <p class="${answerClass}">${answerText}</p>
+                    <p><strong>Réponse correcte:</strong> ${question.options[question.answer]}</p>
+                    <p><em>${question.explanation}</em></p>
+                `;
+                answersContainer.appendChild(answerDiv);
+            });
+
+            let resultMessage = '';
+            if (score >= 8) {
+                resultMessage = 'Bravo ! Vous avez un excellent score !';
+            } else if (score >= 5) {
+                resultMessage = 'Bien joué ! Vous avez encore un peu à apprendre.';
+            } else {
+                resultMessage = 'Pas grave, il y a encore du travail. Refaite le test pour progresser !';
+            }
+
+            const resultElement = document.createElement('p');
+            resultElement.style.fontSize = '18px';
+            resultElement.style.fontWeight = 'bold';
+            resultElement.textContent = resultMessage;
+            document.getElementById('score').appendChild(resultElement);
+        }
+
+        function restartQuiz() {
+            currentQuestion = 0;
+            score = 0;
+            userAnswers = [];
+            document.getElementById('score').style.display = 'none';
+            document.getElementById('quiz').style.display = 'block';
+            document.getElementById('answers').innerHTML = '';
+            displayQuestion();
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            displayQuestion();
+        });
+    </script>
+</body>
+</html>
+
